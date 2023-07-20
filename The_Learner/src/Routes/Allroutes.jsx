@@ -13,31 +13,21 @@ import SignUp from "../Pages/SignUp";
 import BlogPost from "../Pages/BlogPost";
 import Privateroute from "./Privateroute";
 import Home from "../Pages/Home";
+import Header from "../Components/common/Header";
+import Contact from "../Pages/Contact";
 
 const Allroutes = () => {
   return (
     <div>
+      <Header />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/couresDatails" element={<CourseDetails />} />
-        <Route
-          path="/login"
-          element={
-            <Privateroute>
-              <Login />
-            </Privateroute>
-          }
-        />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/student" element={<Students />} />
-        <Route
-          path="/newAdmission"
-          element={
-            <Privateroute>
-              <NewAdmission />
-            </Privateroute>
-          }
-        />
+        <Route path="/newAdmission" element={<NewAdmission />} />
         <Route path="/teachers" element={<Teacher />} />
         <Route path="/events" element={<Events />} />
         <Route path="/courses" element={<Courses />} />
