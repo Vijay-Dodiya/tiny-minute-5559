@@ -10,7 +10,7 @@ import Events from "../Pages/Events";
 import Courses from "../Pages/Courses";
 import Fees from "../Components/monetization/Fees";
 import SignUp from "../Pages/SignUp";
-import BlogPost from "../Pages/BlogPost";
+
 import Privateroute from "./Privateroute";
 import Home from "../Pages/Home";
 import Header from "../Components/common/Header";
@@ -24,6 +24,7 @@ const Allroutes = () => {
         <Route path="/" element={<Home />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/couresDatails" element={<CourseDetails />} />
+        {/* For the single page  */}
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/student" element={<Students />} />
@@ -33,7 +34,6 @@ const Allroutes = () => {
         <Route path="/courses" element={<Courses />} />
         <Route path="/fees" element={<Fees />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/blogpost" element={<BlogPost />} />
       </Routes>
     </div>
   );

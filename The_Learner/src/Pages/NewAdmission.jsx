@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { Navigate } from "react-router-dom";
 import {
   Progress,
   Box,
@@ -25,6 +26,7 @@ import {
 
 import { useToast } from "@chakra-ui/react";
 import ModelForm from "../Components/ModelForm";
+import { AppContext } from "./../Context/AppContextProvider";
 
 const Form1 = ({ formData, setFormData }) => {
   const [show, setShow] = React.useState(false);
@@ -392,6 +394,8 @@ export default function NewAdmission() {
   const [formData, setFormData] = useState({});
   const [showModal, setShowModal] = useState(false);
 
+  const { isAuth } = useContext(AppContext);
+
   const handleNext = () => {
     setStep(step + 1);
     if (step === 2) {
@@ -442,6 +446,9 @@ export default function NewAdmission() {
         });
       });
   };
+  if (!isAuth) {
+    return <Navigate to="/login" replace={true} />;
+  }
 
   return (
     <>
