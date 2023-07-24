@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useReducer } from "react";
 import {
   Flex,
   Box,
@@ -17,36 +17,60 @@ import {
 } from "@chakra-ui/react";
 
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import axios from "axios";
 import { Navigate } from "react-router-dom";
-import { useState, useReducer } from "react";
+
+const formReducer = (state, action) => {
+  switch (action.type) {
+    case "UPDATE_FIELD":
+      return {
+        ...state,
+        [action.field]: action.value,
+      };
+    case "SIGNUP_START":
+      return {
+        ...state,
+        isLoading: true,
+        isError: false,
+      };
+    case "SIGNUP_SUCCESS":
+      return {
+        ...state,
+        isLoading: false,
+        isError: false,
+        signUpSuccess: true,
+      };
+    case "SIGNUP_ERROR":
+      return {
+        ...state,
+        isLoading: false,
+        isError: true,
+      };
+    default:
+      return state;
+  }
+};
 
 const SignUp = () => {
-  const [showPassword, setShowPassword] = useState(false);
   const [login, setLogin] = useState(false);
-
   const initialState = {
     firstName: "",
     lastName: "",
     email: "",
     password: "",
+    isLoading: false,
+    isError: false,
+    signUpSuccess: false,
   };
 
-  const formReducer = (state, action) => {
-    switch (action.type) {
-      case "UPDATE_FIELD":
-        return {
-          ...state,
-          [action.field]: action.value,
-        };
-      default:
-        return state;
-    }
-  };
   const [formData, dispatch] = useReducer(formReducer, initialState);
+
   const handleSignUp = async () => {
+    dispatch({ type: "SIGNUP_START" });
+
     try {
       // Send a POST request to your signup endpoint with the user data
-      const response = await axios.post("/api/signup", {
+      const response = await axios.post("https://reqres.in/api/register", {
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
@@ -57,14 +81,25 @@ const SignUp = () => {
         // Handle successful signup
         console.log("Signup successful");
         // Redirect to the login page
-        setLogin(true);
+        dispatch({ type: "SIGNUP_SUCCESS" });
       } else {
         // Handle signup error
         console.error("Signup failed");
+        dispatch({ type: "SIGNUP_ERROR" });
       }
     } catch (error) {
       console.error("Signup failed", error);
+      dispatch({ type: "SIGNUP_ERROR" });
     }
+  };
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    dispatch({
+      type: "UPDATE_FIELD",
+      field: name,
+      value: value,
+    });
   };
 
   return (
@@ -96,14 +131,9 @@ const SignUp = () => {
                   <FormLabel>First Name</FormLabel>
                   <Input
                     type="text"
+                    name="firstName"
                     value={formData.firstName}
-                    onChange={(e) =>
-                      dispatch({
-                        type: "UPDATE_FIELD",
-                        field: "firstName",
-                        value: e.target.value,
-                      })
-                    }
+                    onChange={handleInputChange}
                   />
                 </FormControl>
               </Box>
@@ -112,14 +142,9 @@ const SignUp = () => {
                   <FormLabel>Last Name</FormLabel>
                   <Input
                     type="text"
+                    name="lastName"
                     value={formData.lastName}
-                    onChange={(e) =>
-                      dispatch({
-                        type: "UPDATE_FIELD",
-                        field: "lastName",
-                        value: e.target.value,
-                      })
-                    }
+                    onChange={handleInputChange}
                   />
                 </FormControl>
               </Box>
@@ -128,44 +153,39 @@ const SignUp = () => {
               <FormLabel>Email address</FormLabel>
               <Input
                 type="email"
+                name="email"
                 value={formData.email}
-                onChange={(e) =>
-                  dispatch({
-                    type: "UPDATE_FIELD",
-                    field: "email",
-                    value: e.target.value,
-                  })
-                }
+                onChange={handleInputChange}
               />
             </FormControl>
             <FormControl id="password" isRequired>
               <FormLabel>Password</FormLabel>
               <InputGroup>
                 <Input
-                  type={showPassword ? "text" : "password"}
+                  type={formData.showPassword ? "text" : "password"}
+                  name="password"
                   value={formData.password}
-                  onChange={(e) =>
-                    dispatch({
-                      type: "UPDATE_FIELD",
-                      field: "password",
-                      value: e.target.value,
-                    })
-                  }
+                  onChange={handleInputChange}
                 />
                 <InputRightElement h={"full"}>
                   <Button
                     variant={"ghost"}
                     onClick={() =>
-                      setShowPassword((showPassword) => !showPassword)
+                      dispatch({
+                        type: "UPDATE_FIELD",
+                        field: "showPassword",
+                        value: !formData.showPassword,
+                      })
                     }
                   >
-                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                    {formData.showPassword ? <ViewIcon /> : <ViewOffIcon />}
                   </Button>
                 </InputRightElement>
               </InputGroup>
             </FormControl>
             <Stack spacing={10} pt={2}>
               <Button
+                isLoading={formData.isLoading}
                 loadingText="Submitting"
                 size="lg"
                 bg={"blue.400"}
@@ -173,9 +193,18 @@ const SignUp = () => {
                 _hover={{
                   bg: "blue.500",
                 }}
+                onClick={handleSignUp}
               >
                 Sign up
               </Button>
+              {formData.isError && (
+                <Text color="red.500">Signup failed. Please try again.</Text>
+              )}
+              {formData.signUpSuccess && (
+                <Text color="green.500">
+                  Signup successful! You can now log in.
+                </Text>
+              )}
             </Stack>
             <Stack pt={6}>
               <Text align={"center"}>

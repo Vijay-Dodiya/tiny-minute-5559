@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Flex,
   Box,
@@ -13,38 +13,17 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
-// import { useHistory } from "react-router-dom";
+import { AppContext } from "../Context/AppContextProvider";
 
 const Login = () => {
+  const { login } = useContext(AppContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // const history = useHistory();
 
-  const handleLogin = async () => {
-    try {
-      // Send a POST request to your authentication endpoint with the email and password
-      const response = await fetch("/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (response.ok) {
-        // If the login is successful, store the JWT token in local storage
-        const { token } = await response.json();
-        localStorage.setItem("token", token);
-
-        // Redirect to the authenticated route
-        // history.push("/Home");
-      } else {
-        // Handle login error
-        console.error("Login failed");
-      }
-    } catch (error) {
-      console.error("Login failed", error);
-    }
+  const handleSubmit = (e) => {
+    // console.log(email, password);
+    e.preventDefault();
+    login(email, password);
   };
 
   return (
@@ -101,7 +80,7 @@ const Login = () => {
                   _hover={{
                     bg: "blue.500",
                   }}
-                  onClick={handleLogin}
+                  onClick={handleSubmit}
                 >
                   Sign in
                 </Button>

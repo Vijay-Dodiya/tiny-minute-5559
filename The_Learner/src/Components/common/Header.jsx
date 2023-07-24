@@ -6,7 +6,7 @@ import { Flex, Box, Link, Input, Button } from "@chakra-ui/react";
 const Header = () => {
   return (
     <>
-      <Box width="100vw" bg="teal.500" p="3">
+      <Box width="100vw" bg="grey" p="3">
         <Flex as="nav" alignItems="center" justifyContent="space-around">
           <Link href="/">
             <img
@@ -15,13 +15,22 @@ const Header = () => {
               width="100px"
             />
           </Link>
-          <Input placeholder="Search" size="xl" width="250px" />
+          <Input
+            placeholder="Search"
+            size="xl"
+            height="50px"
+            width="250px"
+            bg="whiteAlpha"
+            borderRadius="20px"
+            textAlign="center"
+          />
           <Flex
             as="ul"
             listStyleType="none"
             p="0"
             m="0"
-            bg={"green.500"}
+            bg="green.300"
+            borderRadius="20px"
             variant="soft-rounded"
             padding={5}
             justifyContent="space-between"
@@ -98,7 +107,7 @@ const Header = () => {
                 SignIn
               </NavLink>
             </Button>
-            <Button colorScheme="teal" variant="outline">
+            <Button colorScheme="teal">
               <NavLink
                 to="/signup"
                 style={({ isActive, isPending }) => {
